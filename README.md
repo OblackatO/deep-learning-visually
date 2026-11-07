@@ -42,7 +42,7 @@ exams, and coding exercises that check your answers.
 | 05b | Transfer learning | [05b_corgi_door.ipynb](course_content/tutorials/05b_corgi_door.ipynb) | [Open](https://colab.research.google.com/github/OblackatO/deep-learning-visually/blob/main/course_content/tutorials/05b_corgi_door.ipynb) | Planned |
 | 06 | Natural language processing | [06_nlp.ipynb](course_content/tutorials/06_nlp.ipynb) | [Open](https://colab.research.google.com/github/OblackatO/deep-learning-visually/blob/main/course_content/tutorials/06_nlp.ipynb) | Planned |
 
-The slide decks are being redesigned and are added lesson by lesson.
+Slides: [Part 1 · An introduction to deep learning](course_content/slides/slides_01.pptx). The other decks are being redesigned and are added lesson by lesson.
 Questions that come up while working through the lessons are answered in the
 [FAQ](course_content/FAQ.md).
 

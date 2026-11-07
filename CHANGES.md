@@ -34,6 +34,16 @@ This file lists the changes made to NVIDIA's material, as required by those lice
   added a pointer to the new CPU image.
 - `course_content/README.md`: updated paths, image names and setup instructions.
 
+## `slides_01.pptx`
+
+- New title, colour theme and fonts; removed all NVIDIA logos and brand backgrounds.
+- Removed all Microsoft 365 stock images and icons, third-party logos and a screenshot of
+  a third-party video; replaced them with new diagrams or with openly licensed photos.
+- Removed the Microsoft 365 content notice slide.
+- Replaced the copyright footer with an attribution footer, and added a Credits slide.
+- Added four new slides (an image's path through the model, an image as numbers, one
+  neuron, the training loop) and a closing slide.
+
 ## Removed
 
 - The NVIDIA Deep Learning Institute header image (`images/DLI_Header.png`).

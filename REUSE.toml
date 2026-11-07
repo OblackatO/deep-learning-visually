@@ -112,3 +112,16 @@ path = "course_content/tutorials/01_mnist.ipynb"
 SPDX-FileCopyrightText = ["2026 NVIDIA CORPORATION & AFFILIATES", "2026 Pedro Gomes"]
 SPDX-License-Identifier = "Apache-2.0 AND CC-BY-4.0 AND LicenseRef-DLV-Personal-Use"
 SPDX-FileComment = "NVIDIA's cells: code Apache-2.0, other cells CC-BY-4.0. Additions by Pedro Gomes (Interactive cells, Check Your Understanding, Practice Exercises): LicenseRef-DLV-Personal-Use."
+
+[[annotations]]
+path = "course_content/slides/slides_01.pptx"
+SPDX-FileCopyrightText = [
+    "2026 NVIDIA CORPORATION & AFFILIATES",
+    "2026 Pedro Gomes",
+    "Vadim Kudlay",
+    "Plank",
+    "Danielle Detering",
+    "Yann LeCun, Corinna Cortes, Christopher J. C. Burges",
+]
+SPDX-License-Identifier = "CC-BY-4.0 AND LicenseRef-DLV-Personal-Use AND CC-BY-3.0 AND CC-BY-SA-3.0"
+SPDX-FileComment = "NVIDIA's slide text: CC-BY-4.0. New design, diagrams and slides by Pedro Gomes: LicenseRef-DLV-Personal-Use. Photos and MNIST adaptations as listed on the Credits slide."
