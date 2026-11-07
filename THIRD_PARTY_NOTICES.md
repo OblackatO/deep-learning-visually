@@ -96,6 +96,7 @@ File: `course_content/tutorials/images/asl.png`
 - Source: https://commons.wikimedia.org/wiki/File:Asl_alphabet_gallaudet.png
 - Status: Released into the public domain by the creator
 - Modifications: Original file renamed to `asl.png`; image content was not modified
+- `slides_02.pptx` uses a rearranged version of this image (the letter drawings only, in two rows)
 
 
 ## Jack Russell Terrier photograph

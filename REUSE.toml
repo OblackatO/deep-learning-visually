@@ -125,3 +125,14 @@ SPDX-FileCopyrightText = [
 ]
 SPDX-License-Identifier = "CC-BY-4.0 AND LicenseRef-DLV-Personal-Use AND CC-BY-3.0 AND CC-BY-SA-3.0"
 SPDX-FileComment = "NVIDIA's slide text: CC-BY-4.0. New design, diagrams and slides by Pedro Gomes: LicenseRef-DLV-Personal-Use. Photos and MNIST adaptations as listed on the Credits slide."
+
+[[annotations]]
+path = "course_content/slides/slides_02.pptx"
+SPDX-FileCopyrightText = [
+    "2026 NVIDIA CORPORATION & AFFILIATES",
+    "2026 Pedro Gomes",
+    "2004 Ds13 (Darren Stone)",
+    "Yann LeCun, Corinna Cortes, Christopher J. C. Burges",
+]
+SPDX-License-Identifier = "CC-BY-4.0 AND LicenseRef-DLV-Personal-Use AND CC-BY-SA-3.0 AND LicenseRef-Public-Domain"
+SPDX-FileComment = "NVIDIA's slide text and plots: CC-BY-4.0. New design, diagrams and slides by Pedro Gomes: LicenseRef-DLV-Personal-Use. ASL alphabet (public domain) and MNIST adaptation (CC-BY-SA-3.0) as listed on the Credits slide."

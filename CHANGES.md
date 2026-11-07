@@ -49,6 +49,17 @@ This file lists the changes made to NVIDIA's material, as required by those lice
 - Added four new slides (an image's path through the model, an image as numbers, one
   neuron, the training loop) and a closing slide.
 
+## `slides_02.pptx`
+
+- New title, colour theme and fonts; removed all NVIDIA logos and brand backgrounds.
+- Removed the Microsoft 365 content notice slide, stock images and icons, and screenshots of
+  third-party websites; replaced them with new diagrams and with the same code as native text.
+- Recoloured NVIDIA's loss-surface and activation-function plots.
+- Rebuilt the ASL alphabet slide from the public-domain `asl.png`.
+- Replaced the copyright footer with an attribution footer, and added a Credits slide.
+- Added three new slides (from a CSV row to a tensor, Dataset and DataLoader, learning curves
+  and overfitting) and a closing slide.
+
 ## Removed
 
 - The NVIDIA Deep Learning Institute header image (`images/DLI_Header.png`).
