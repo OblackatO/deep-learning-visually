@@ -46,18 +46,6 @@ Slides: [Part 1 · An introduction to deep learning](course_content/slides/slide
 Questions that come up while working through the lessons are answered in the
 [FAQ](course_content/FAQ.md).
 
-## Exam-prep pack
-
-Want to go further? The **exam-prep pack** adds, for every lesson:
-
-- **Mock exams**: timed, multiple-choice exams in the style of professional certification
-  exams, with an explanation for every answer, plus a final exam for the whole course.
-- **Projects with full solutions**: larger end-of-lesson projects on new datasets, with
-  complete, commented solution notebooks.
-
-**Price: €19** (launch price: €12). Payment is handled by Lemon Squeezy, which takes care
-of VAT and sends you an invoice. *Coming soon.*
-
 ## Getting started
 
 ### Google Colab (no installation)
