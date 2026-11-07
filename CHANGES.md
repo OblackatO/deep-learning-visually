@@ -30,7 +30,8 @@ This file lists the changes made to NVIDIA's material, as required by those lice
 - `train()` and `validate()` also return the average loss and the accuracy; the training loop
   stores them in `history` and numbers the epochs from 1.
 - Added a note after the overfitting discussion: with the current version of the dataset,
-  validation accuracy is usually almost as high as training accuracy.
+  validation accuracy is usually almost as high as training accuracy, because most validation
+  images have a near-identical image in the training set.
 
 ## Docker
 
