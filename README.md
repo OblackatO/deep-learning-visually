@@ -66,7 +66,7 @@ Run these commands from the `course_content/` directory, then open
 docker build -t dlv-app . && docker run -d -p 8888:8888 --name dlv-container --gpus all dlv-app
 ```
 
-**macOS, or any machine without a GPU** (runs natively on Apple Silicon and x86-64):
+**macOS, or Linux without a GPU** (runs natively on Apple Silicon and x86-64):
 
 ```bash
 docker build -f Dockerfile.cpu -t dlv-app-cpu . && docker run -d -p 8888:8888 --name dlv-container dlv-app-cpu
@@ -74,6 +74,28 @@ docker build -f Dockerfile.cpu -t dlv-app-cpu . && docker run -d -p 8888:8888 --
 
 To keep your notebook changes on your computer, add
 `-v "$PWD/tutorials:/course/tutorials"` to the `docker run` command.
+
+**Windows 10 or 11.** Install [Docker Desktop](https://docs.docker.com/desktop/setup/install/windows-install/)
+with the WSL 2 backend (the default), then run these commands in PowerShell from the
+`course_content` folder.
+
+With an NVIDIA GPU: install the latest NVIDIA driver, run `wsl --update` once, then:
+
+```powershell
+docker build -t dlv-app .
+docker run -d -p 8888:8888 --name dlv-container --gpus all dlv-app
+```
+
+Without an NVIDIA GPU:
+
+```powershell
+docker build -f Dockerfile.cpu -t dlv-app-cpu .
+docker run -d -p 8888:8888 --name dlv-container dlv-app-cpu
+```
+
+To keep your notebook changes on your computer, add
+`-v "${PWD}/tutorials:/course/tutorials"` to the `docker run` command
+(in Command Prompt: `-v "%cd%\tutorials:/course/tutorials"`).
 
 > [!NOTE]
 > On macOS, do not use the GPU `Dockerfile` or `--gpus all`. Docker Desktop cannot pass a
