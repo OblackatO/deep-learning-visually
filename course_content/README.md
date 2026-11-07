@@ -22,6 +22,7 @@ This repository contains Jupyter notebooks and environment setup files for a han
     ├── 05a_doggy_door.ipynb
     ├── 05b_corgi_door.ipynb
     ├── 06_nlp.ipynb
+    ├── interactive/
     └── utils.py
 ```
 
@@ -56,6 +57,7 @@ Contains the course notebooks:
 - `05b_corgi_door.ipynb`: Transfer learning with a pre-trained model.
 - `06_nlp.ipynb`: Natural language processing with sequence data.
 - `utils.py`: Shared helper code used by the notebooks.
+- `interactive/`: Interactive diagrams, quizzes and exercise checks used by the notebooks.
 
 ## Run in Google Colab
 
@@ -74,7 +76,7 @@ created during the lesson.
 
 | Lab | Support files downloaded from GitHub |
 |---|---|
-| 01 MNIST | None; torchvision downloads the dataset |
+| 01 MNIST | `interactive/mnist.py`, `interactive/quiz.py`; torchvision downloads the dataset |
 | 02 ASL | `data/data.py` |
 | 03 CNN | `data/data.py` |
 | 04a Augmentation | `utils.py`, `data/data.py` |

@@ -105,3 +105,10 @@ path = "course_content/tutorials/data/imagenet_class_index.json"
 SPDX-FileCopyrightText = "Keras authors; WordNet, Princeton University"
 SPDX-License-Identifier = "Apache-2.0"
 SPDX-FileComment = "ImageNet class index as distributed with Keras; class names from WordNet (WordNet License)."
+
+# Notebooks that contain additions by Pedro Gomes next to NVIDIA's cells.
+[[annotations]]
+path = "course_content/tutorials/01_mnist.ipynb"
+SPDX-FileCopyrightText = ["2026 NVIDIA CORPORATION & AFFILIATES", "2026 Pedro Gomes"]
+SPDX-License-Identifier = "Apache-2.0 AND CC-BY-4.0 AND LicenseRef-DLV-Personal-Use"
+SPDX-FileComment = "NVIDIA's cells: code Apache-2.0, other cells CC-BY-4.0. Additions by Pedro Gomes (Interactive cells, Check Your Understanding, Practice Exercises): LicenseRef-DLV-Personal-Use."
