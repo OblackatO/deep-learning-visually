@@ -1,0 +1,60 @@
+# SPDX-FileCopyrightText: 2026 Pedro Gomes
+# SPDX-FileCopyrightText: 2026 NVIDIA CORPORATION & AFFILIATES (parts adapted from Dockerfile)
+# SPDX-License-Identifier: LicenseRef-DLV-Personal-Use AND Apache-2.0
+
+# CPU-only image for machines without an NVIDIA GPU, including Apple Silicon Macs.
+#
+# The GPU image (Dockerfile) is built on pytorch/pytorch CUDA images, which are
+# published for linux/amd64 only. On Apple Silicon that image runs under Rosetta
+# emulation, where the Jupyter kernel deadlocks and notebook cells never return
+# output. This image is multi-arch, so it builds and runs natively on arm64 and
+# amd64 hosts alike.
+#
+# Build and run with:
+#   docker build -f Dockerfile.cpu -t dlv-app-cpu .
+#   docker run -d -p 8888:8888 --name dlv-container dlv-app-cpu
+FROM python:3.11-slim-bookworm
+
+# Avoid interactive prompts during apt installs
+ENV DEBIAN_FRONTEND=noninteractive
+
+# System deps: Pillow (libjpeg/libpng), OpenCV (libGL/glib/X11 libs), git, and
+# g++, which torch.compile needs to build its C++ kernels on CPU
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        libjpeg62-turbo \
+        libpng16-16 \
+        libgl1 \
+        libglib2.0-0 \
+        libsm6 \
+        libxext6 \
+        libxrender1 \
+        git \
+        g++ \
+    && rm -rf /var/lib/apt/lists/*
+
+# CPU-only PyTorch, same versions as the GPU base image (pytorch/pytorch:2.7.1)
+RUN pip install --no-cache-dir \
+        torch==2.7.1 \
+        torchvision==0.22.1 \
+        --index-url https://download.pytorch.org/whl/cpu
+
+COPY ./environment/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+RUN pip install --no-cache-dir jupyterlab==4.6.2 ipywidgets==8.1.2
+
+ENV SHELL=/bin/bash
+ENV PYTHONPATH=/course
+WORKDIR /course/
+COPY . .
+
+WORKDIR /course/tutorials
+
+EXPOSE 8888
+
+CMD ["jupyter", "lab", \
+     "--ip=0.0.0.0", \
+     "--allow-root", \
+     "--no-browser", \
+     "--NotebookApp.token=", \
+     "--NotebookApp.password="]

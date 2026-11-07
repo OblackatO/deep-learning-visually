@@ -1,0 +1,51 @@
+Deep Learning, Visually
+Copyright (c) 2026 Pedro Gomes, except where stated otherwise below.
+
+This repository combines three kinds of material under different terms.
+
+1. NVIDIA's original material
+
+   This course is adapted from "Fundamentals of Deep Learning" by NVIDIA,
+   https://github.com/NVDLI/fundamentals-of-deep-learning,
+   Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES.
+
+   NVIDIA's material keeps its original licenses, also inside this repository
+   (NVIDIA's original license notice is kept unchanged in
+   LICENSES/NVIDIA-original-LICENSE.txt):
+
+   - Source code files and notebook code cells: Apache License 2.0,
+     see LICENSES/Apache-2.0.txt.
+   - Documentation, notebook Markdown and raw cells, and NVIDIA-created
+     media: Creative Commons Attribution 4.0 International, see
+     LICENSES/CC-BY-4.0.txt and LICENSES/CC-BY-4.0-Apache2_Dual_License.txt.
+
+   The changes made to NVIDIA's material are listed in CHANGES.md.
+
+   NVIDIA names, logos and trademarks are not licensed. This course is not
+   affiliated with, sponsored or endorsed by NVIDIA.
+
+2. Additions by Pedro Gomes
+
+   Everything written or created by Pedro Gomes for this course is
+   Copyright (c) 2026 Pedro Gomes, all rights reserved, and is made available
+   only under LICENSES/LicenseRef-DLV-Personal-Use.txt (personal,
+   non-commercial learning; no sharing, publishing or selling). This includes:
+
+   - README.md, CHANGES.md, CONTRIBUTING.md and SECURITY.md (text written
+     by Pedro Gomes),
+   - course_content/FAQ.md,
+   - course_content/Dockerfile.cpu (adapted in part from NVIDIA's
+     Apache-2.0 Dockerfile, whose parts remain under Apache-2.0),
+   - everything in course_content/tutorials/interactive/,
+   - in the notebooks: the cells marked "Interactive", the "Check Your
+     Understanding" and "Practice Exercises" sections, as stated in each
+     notebook's license notice,
+   - in the slide decks: the slides, diagrams and text added by Pedro Gomes,
+     as listed on each deck's "Credits" slide.
+
+   REUSE.toml records the copyright holders and licenses of each file.
+
+3. Third-party material
+
+   Images, datasets and pre-trained models from other creators keep their own
+   licenses. See THIRD_PARTY_NOTICES.md.

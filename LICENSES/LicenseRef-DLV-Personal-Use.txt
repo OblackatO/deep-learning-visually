@@ -1,0 +1,53 @@
+Deep Learning, Visually - Personal Use License
+
+Copyright (c) 2026 Pedro Gomes. All rights reserved.
+
+This license applies only to the "Additions": the material written or created
+by Pedro Gomes for "Deep Learning, Visually", as identified in the LICENSE file,
+in REUSE.toml and in the license notice of each notebook. It does not apply to
+NVIDIA's original material or to third-party material, which keep their own
+licenses.
+
+1. Permitted use
+
+   You may view, download and run the Additions, and make private copies and
+   private modifications of them, solely for your own personal, non-commercial
+   learning.
+
+2. Restrictions
+
+   No other rights are granted. Unless Pedro Gomes has given you prior written
+   permission, you may not:
+
+   a. copy, redistribute, publish, share or otherwise make the Additions
+      available to anyone else, in whole or in part, modified or unmodified,
+      including on websites, code repositories, course or e-learning platforms,
+      social media or file-sharing services;
+   b. sell, rent, sublicense or otherwise use the Additions for any commercial
+      purpose, including in paid courses, workshops, training, tutoring or
+      consulting;
+   c. remove or alter any copyright, license or attribution notice.
+
+   Forks created with GitHub's built-in fork feature are permitted only to the
+   extent required by GitHub's Terms of Service and do not grant any rights
+   beyond this license.
+
+3. Paid material
+
+   Material that is sold separately (for example mock exams, projects and
+   their solutions) is licensed to the individual buyer under the terms shown
+   at the time of purchase. Buying it does not grant any right to share it.
+
+4. No warranty
+
+   THE ADDITIONS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY ARISING FROM, OUT
+   OF OR IN CONNECTION WITH THE ADDITIONS OR THEIR USE.
+
+5. Contact
+
+   To ask for permission (for example to use the Additions in a class or
+   company training), open an issue at
+   https://github.com/OblackatO/deep-learning-visually/issues.
