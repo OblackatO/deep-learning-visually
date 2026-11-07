@@ -27,6 +27,10 @@ This file lists the changes made to NVIDIA's material, as required by those lice
 ## `02_asl.ipynb`
 
 - Updated the text that referred to `ToTensor()`.
+- `train()` and `validate()` also return the average loss and the accuracy; the training loop
+  stores them in `history` and numbers the epochs from 1.
+- Added a note after the overfitting discussion: with the current version of the dataset,
+  validation accuracy is usually almost as high as training accuracy.
 
 ## Docker
 

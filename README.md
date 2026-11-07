@@ -34,7 +34,7 @@ exams, and coding exercises that check your answers.
 |---|---|---|---|---|
 | 00 | Working in JupyterLab | [00_jupyterlab.ipynb](course_content/tutorials/00_jupyterlab.ipynb) | | — |
 | 01 | Image classification with MNIST | [01_mnist.ipynb](course_content/tutorials/01_mnist.ipynb) | [Open](https://colab.research.google.com/github/OblackatO/deep-learning-visually/blob/main/course_content/tutorials/01_mnist.ipynb) | ✓ Diagrams, quiz, exercises |
-| 02 | How a neural network trains | [02_asl.ipynb](course_content/tutorials/02_asl.ipynb) | [Open](https://colab.research.google.com/github/OblackatO/deep-learning-visually/blob/main/course_content/tutorials/02_asl.ipynb) | Planned |
+| 02 | How a neural network trains | [02_asl.ipynb](course_content/tutorials/02_asl.ipynb) | [Open](https://colab.research.google.com/github/OblackatO/deep-learning-visually/blob/main/course_content/tutorials/02_asl.ipynb) | ✓ Diagrams, quiz, exercises |
 | 03 | Convolutional neural networks | [03_asl_cnn.ipynb](course_content/tutorials/03_asl_cnn.ipynb) | [Open](https://colab.research.google.com/github/OblackatO/deep-learning-visually/blob/main/course_content/tutorials/03_asl_cnn.ipynb) | Planned |
 | 04a | Data augmentation | [04a_asl_augmentation.ipynb](course_content/tutorials/04a_asl_augmentation.ipynb) | [Open](https://colab.research.google.com/github/OblackatO/deep-learning-visually/blob/main/course_content/tutorials/04a_asl_augmentation.ipynb) | Planned |
 | 04b | Deploying a model | [04b_asl_predictions.ipynb](course_content/tutorials/04b_asl_predictions.ipynb) | [Open](https://colab.research.google.com/github/OblackatO/deep-learning-visually/blob/main/course_content/tutorials/04b_asl_predictions.ipynb) | Planned |

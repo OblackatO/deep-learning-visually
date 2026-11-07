@@ -108,7 +108,7 @@ SPDX-FileComment = "ImageNet class index as distributed with Keras; class names 
 
 # Notebooks that contain additions by Pedro Gomes next to NVIDIA's cells.
 [[annotations]]
-path = "course_content/tutorials/01_mnist.ipynb"
+path = ["course_content/tutorials/01_mnist.ipynb", "course_content/tutorials/02_asl.ipynb"]
 SPDX-FileCopyrightText = ["2026 NVIDIA CORPORATION & AFFILIATES", "2026 Pedro Gomes"]
 SPDX-License-Identifier = "Apache-2.0 AND CC-BY-4.0 AND LicenseRef-DLV-Personal-Use"
 SPDX-FileComment = "NVIDIA's cells: code Apache-2.0, other cells CC-BY-4.0. Additions by Pedro Gomes (Interactive cells, Check Your Understanding, Practice Exercises): LicenseRef-DLV-Personal-Use."
