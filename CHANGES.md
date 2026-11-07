@@ -23,6 +23,8 @@ This file lists the changes made to NVIDIA's material, as required by those lice
   explains it.
 - Made the prediction cell device-agnostic (`x_0_tensor.to(device)` instead of `x_0_gpu`),
   so the notebook runs to the end without a GPU.
+- Set the optimizer's learning rate explicitly (`Adam(model.parameters(), lr=0.001)`, the
+  default) and added a plain-language explanation of the learning rate.
 
 ## `02_asl.ipynb`
 
