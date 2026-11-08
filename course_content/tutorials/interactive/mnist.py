@@ -651,7 +651,8 @@ _TRAIN_STEPS = [
     ("Get a batch", [5, 6], "Take the next batch of images (x) and their labels (y) and move them "
                             "to the device (GPU or CPU)."),
     ("Predict", [7], "Forward pass: the model turns every image in the batch into 10 scores."),
-    ("Clear gradients", [8], "Forget the gradients from the previous batch, so they don't add up."),
+    ("Clear gradients", [8], "Wipe the gradients of the previous batch. backward() adds new gradients to "
+                             "the old ones instead of replacing them, so without this they would pile up."),
     ("Grade", [9], "The loss function compares the scores with the correct labels. "
                    "One number: lower is better."),
     ("Find direction", [10], "Backward pass: for every weight, work out whether increasing or decreasing "
@@ -708,6 +709,221 @@ def show_training_loop(batches_per_epoch=None):
         plt.show()
 
     _show({"step": step}, draw, widgets.HBox([play, step]))
+
+
+_STEP_X = 3.0      # input of the one-weight model
+_STEP_Y = 10.0     # correct answer
+_STEP_W0 = 2.0     # starting weight
+_STEP_LR = 0.01    # learning rate of the SGD optimizer
+_STEP_BEST = _STEP_Y / _STEP_X
+
+
+def _step_loss(w):
+    return (w * _STEP_X - _STEP_Y) ** 2
+
+
+def explore_training_step():
+    """Run the real zero_grad(), backward() and step() lines on a model with a single weight."""
+    import torch
+
+    wide = widgets.Layout(width="auto")
+    buttons = {
+        "forward": widgets.Button(description="1. Predict + grade (forward)", layout=wide),
+        "zero_grad": widgets.Button(description="2. optimizer.zero_grad()", layout=wide),
+        "backward": widgets.Button(description="3. batch_loss.backward()", layout=wide),
+        "step": widgets.Button(description="4. optimizer.step()", layout=wide),
+    }
+    run_one = widgets.Button(description="Run 1 batch (1 → 4)", layout=wide, button_style="info")
+    run_ten = widgets.Button(description="Run 10 batches", layout=wide, button_style="info")
+    skip = widgets.Checkbox(value=False, description="Skip zero_grad() in Run", indent=False,
+                            layout=widgets.Layout(width="200px", margin="0 0 0 12px"))
+    reset = widgets.Button(description="Reset", layout=wide)
+    message = widgets.HTML()
+    out = widgets.Output()
+    state = {}
+
+    def start():
+        w = torch.tensor(_STEP_W0, requires_grad=True)
+        state.update(w=w, optimizer=torch.optim.SGD([w], lr=_STEP_LR), batch_loss=None,
+                     history=[_STEP_W0], changed=set())
+        return (f"A model with <b>one weight</b> <code>w = {_STEP_W0:g}</code>. It predicts <code>w × {_STEP_X:g}</code>, "
+                f"the correct answer is <code>{_STEP_Y:g}</code>, and the loss is <code>(prediction − {_STEP_Y:g})²</code>. "
+                "Each button runs that line with real PyTorch. Start with button 1.")
+
+    def grad():
+        g = state["w"].grad
+        return None if g is None else g.item()
+
+    def forward():
+        output = state["w"] * _STEP_X
+        state["batch_loss"] = (output - _STEP_Y) ** 2
+        state["changed"] = {"batch_loss"}
+        return (f"<b>Forward pass.</b> Prediction = {state['w'].item():.3f} × {_STEP_X:g} = {output.item():.2f}. "
+                f"The correct answer is {_STEP_Y:g}, so the loss is ({output.item():.2f} − {_STEP_Y:g})² = "
+                f"{state['batch_loss'].item():.2f}. PyTorch also recorded these calculations, "
+                "so that <code>backward()</code> can go back through them.")
+
+    def zero_grad():
+        was = grad()
+        state["optimizer"].zero_grad()
+        state["changed"] = {"grad"}
+        if was is None:
+            return "<b>zero_grad():</b> <code>w.grad</code> was already empty. Nothing to wipe."
+        return (f"<b>zero_grad()</b> wiped the old gradient ({was:.2f}). <code>w.grad</code> is now "
+                "<code>None</code>, which means empty. The weight did not change.")
+
+    def backward():
+        state["changed"] = set()
+        if state["batch_loss"] is None:
+            return ("<b>Nothing to go back through.</b> <code>backward()</code> starts from the loss, "
+                    "so run the forward pass (button 1) first.")
+        was = grad()
+        try:
+            state["batch_loss"].backward()
+        except RuntimeError as error:
+            if "second time" not in str(error):
+                return f"<b>PyTorch raised an error:</b> {error}"
+            return ("<b>PyTorch raised an error:</b> <i>Trying to backward through the graph a second time</i>. "
+                    "After <code>backward()</code>, PyTorch throws away its record of the forward pass to save "
+                    "memory. Every batch needs a new forward pass (button 1).")
+        now = grad()
+        state["changed"] = {"grad"}
+        if was:
+            return (f"<b>backward() added</b> the new gradient ({now - was:.2f}) to the one already stored "
+                    f"({was:.2f}), so <code>w.grad</code> = {now:.2f}. The next <code>step()</code> follows this "
+                    "sum, old direction included. That is why <code>train()</code> calls <code>zero_grad()</code> "
+                    "for every batch.")
+        if now < 0:
+            meaning = "Negative: making w bigger lowers the loss, so step() will increase w"
+        elif now > 0:
+            meaning = "Positive: making w bigger raises the loss, so step() will decrease w"
+        else:
+            meaning = "Zero: w is already at the best value, so step() will not move it"
+        return (f"<b>backward()</b> worked out the gradient: <code>w.grad</code> = {now:.2f}. {meaning}. "
+                f"The size, {abs(now):.2f}, is how steep the loss curve is at w = {state['w'].item():.3f}. "
+                "The weight itself has not changed yet.")
+
+    def step():
+        g = grad()
+        old = state["w"].item()
+        state["optimizer"].step()
+        if g is None:
+            state["changed"] = set()
+            return ("<b>step() did nothing:</b> <code>w.grad</code> is empty, so the optimizer has no direction "
+                    "to follow. Run <code>backward()</code> (button 3) first.")
+        new = state["w"].item()
+        state["history"].append(new)
+        state["changed"] = {"w"}
+        return (f"<b>step()</b> moved the weight: w = {old:.3f} − {_STEP_LR:g} × ({g:.2f}) = {new:.3f}. "
+                f"The prediction is now {new * _STEP_X:.2f} (correct answer: {_STEP_Y:g}). "
+                "<code>step()</code> leaves <code>w.grad</code> as it is: wiping it is the job of "
+                "<code>zero_grad()</code>.")
+
+    def run(batches):
+        before = state["w"].item()
+        for _ in range(batches):
+            forward()
+            if not skip.value:
+                zero_grad()
+            backward()
+            step()
+        state["changed"] = {"w", "grad", "batch_loss"}
+        after = state["w"].item()
+        lines = "forward, backward, step, no zero_grad" if skip.value else "forward, zero_grad, backward, step"
+        text = (f"<b>{batches} batch{'es' if batches > 1 else ''}</b> ({lines}): w went from "
+                f"{before:.3f} to {after:.3f} (best value: {_STEP_BEST:.3f}), and the loss from "
+                f"{_step_loss(before):.2f} to {_step_loss(after):.2f}.")
+        if skip.value:
+            text += (" Without <code>zero_grad()</code>, the old gradients pile up in <code>w.grad</code>. "
+                     "The weight swings past the best value and back, and never settles. Follow the trail of dots.")
+        elif batches > 1:
+            text += " Each step is smaller than the one before, because the curve gets flatter near the bottom."
+        return text
+
+    def draw():
+        w = state["w"].item()
+        g = grad()
+        loss_now = _step_loss(w)
+        fig, (ax, ax_mem) = plt.subplots(1, 2, figsize=(13, 4.8), gridspec_kw={"width_ratios": [1.4, 1]})
+
+        ws = np.linspace(0.8, 5.9, 300)
+        ax.plot(ws, _step_loss(ws), color=GREY, lw=2)
+        ax.plot(_STEP_BEST, 0, "*", ms=16, color=PRIMARY_DARK, zorder=4)
+        ax.annotate(f"best w = {_STEP_BEST:.3f}", (_STEP_BEST, 0), (_STEP_BEST, 6.5), ha="center",
+                    fontsize=10, color=PRIMARY_DARK, arrowprops=dict(arrowstyle="-", color=PRIMARY_DARK))
+        trail = [(h, _step_loss(h)) for h in state["history"][-30:]]
+        for (w0, l0), (w1, l1) in zip(trail[:-1], trail[1:]):
+            _arrow(ax, (w0, l0), (w1, l1), color=PRIMARY, lw=1.2)
+        ax.scatter(*zip(*trail), color=PRIMARY_LIGHT, edgecolor=PRIMARY, s=30, zorder=3)
+
+        title = ["Loss for every value of w (black dot = current w)"]
+        if g is not None:
+            d = 0.45
+            true_slope = 2 * (w * _STEP_X - _STEP_Y) * _STEP_X
+            if abs(g - true_slope) > 0.01:
+                ax.plot([w - d, w + d], [loss_now - true_slope * d, loss_now + true_slope * d],
+                        "--", color=GREY, lw=1.5)
+            ax.plot([w - d, w + d], [loss_now - g * d, loss_now + g * d], color=PRIMARY, lw=2.5)
+            target = w - _STEP_LR * g
+            if abs(target - w) > 0.02:
+                _arrow(ax, (w, loss_now), (np.clip(target, 0.8, 5.9), loss_now), color=PRIMARY_DARK, lw=2)
+            title.append("Line = slope stored in w.grad. Arrow = where step() will move w.")
+            if abs(g - true_slope) > 0.01:
+                title.append("Dashed = the real slope here: w.grad no longer matches it.")
+        ax.plot(w, loss_now, "o", ms=13, color=TEXT, zorder=5)
+        ax.set_xlim(0.8, 5.9)
+        ax.set_ylim(-1, 24)
+        ax.set_xlabel("weight w")
+        ax.set_ylabel("loss")
+        ax.set_title("\n".join(title), fontsize=11)
+        _clean(ax)
+
+        ax_mem.set_xlim(0, 10)
+        ax_mem.set_ylim(0, 10)
+        ax_mem.axis("off")
+        ax_mem.set_title("What PyTorch has in memory", fontsize=12, weight="bold")
+        batch_loss = state["batch_loss"]
+        rows = [
+            ("w", f"{w:.3f}", "the weight: changed only by step()", "w"),
+            ("w.grad", "None (empty)" if g is None else f"{g:.2f}",
+             "written by backward(), wiped by zero_grad()", "grad"),
+            ("batch_loss", "-" if batch_loss is None else f"{batch_loss.item():.2f}",
+             "written by the forward pass", "batch_loss"),
+        ]
+        for k, (name, value, note, key) in enumerate(rows):
+            y = 6.9 - 3.15 * k
+            active = key in state["changed"]
+            _box(ax_mem, 0.2, y, 9.6, 2.6, "", fc=PRIMARY if active else PRIMARY_LIGHT)
+            ax_mem.text(0.6, y + 1.65, f"{name} = {value}", fontsize=15, family="monospace",
+                        weight="bold", color="white" if active else TEXT, va="center")
+            ax_mem.text(0.6, y + 0.6, note, fontsize=10, color="white" if active else GREY, va="center")
+        plt.tight_layout()
+        plt.show()
+
+    def show(text):
+        message.value = (f"<div style='border-left: 4px solid {PRIMARY}; padding: 6px 12px; "
+                         f"margin: 6px 0; max-width: 900px'>{text}</div>")
+        with out:
+            out.clear_output(wait=True)
+            draw()
+
+    def on_click(action):
+        return lambda _: show(action())
+
+    for name, action in [("forward", forward), ("zero_grad", zero_grad), ("backward", backward),
+                         ("step", step)]:
+        buttons[name].on_click(on_click(action))
+    run_one.on_click(on_click(lambda: run(1)))
+    run_ten.on_click(on_click(lambda: run(10)))
+    reset.on_click(on_click(start))
+
+    display(widgets.VBox([
+        widgets.HBox(list(buttons.values())),
+        widgets.HBox([run_one, run_ten, skip, reset]),
+        message,
+        out,
+    ]))
+    show(start())
 
 
 def explore_predictions(model, valid_set, device, batch_size=1000):
@@ -881,6 +1097,16 @@ QUESTIONS = [
          answer=1,
          explanation="torch.no_grad() skips gradient tracking, which saves memory and time. model.eval() "
                      "switches layers such as dropout and batch normalisation to inference behaviour."),
+    dict(topic="Software development",
+         question="A developer deletes optimizer.zero_grad() from train(). The code still runs without errors. "
+                  "What goes wrong?",
+         options=["Nothing: backward() replaces the old gradients anyway",
+                  "The gradients of earlier batches pile up in .grad, so the weights follow old directions",
+                  "The weights stop changing, because .grad stays at zero",
+                  "The loss can no longer be computed"],
+         answer=1,
+         explanation="backward() adds new gradients to the ones already stored in .grad. zero_grad() wipes "
+                     "them before each backward pass, so every update uses only the current batch."),
 ]
 
 
