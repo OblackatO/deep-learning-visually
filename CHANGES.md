@@ -25,6 +25,9 @@ This file lists the changes made to NVIDIA's material, as required by those lice
   so the notebook runs to the end without a GPU.
 - Set the optimizer's learning rate explicitly (`Adam(model.parameters(), lr=0.001)`, the
   default) and added a plain-language explanation of the learning rate.
+- Section 1.7.3: replaced the promise of a later line-by-line walkthrough of `train()` with
+  that walkthrough, right after the function: what a gradient is, and what `zero_grad()`,
+  `backward()` and `step()` do.
 
 ## `02_asl.ipynb`
 
