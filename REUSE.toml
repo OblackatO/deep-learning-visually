@@ -88,6 +88,7 @@ path = [
     "LICENSE",
     "LICENSES/LicenseRef-DLV-Personal-Use.txt",
     "course_content/FAQ.md",
+    "course_content/summaries/**",
     "course_content/tutorials/interactive/**"
 ]
 precedence = "aggregate"
