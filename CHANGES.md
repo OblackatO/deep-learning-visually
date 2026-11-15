@@ -32,6 +32,9 @@ This file lists the changes made to NVIDIA's material, as required by those lice
 - Added a note after the overfitting discussion: with the current version of the dataset,
   validation accuracy is usually almost as high as training accuracy, because most validation
   images have a near-identical image in the training set.
+- Replaced the solution cells of the exercises in sections 2.5 (build the model) and 2.6.3
+  (`get_batch_accuracy`) with an automatic check and a collapsible solution, and put the answer
+  to the discussion in section 2.6.4 in a collapsible block.
 
 ## Docker
 

@@ -10,9 +10,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
+from matplotlib.ticker import MaxNLocator
 
-from .mnist import (GREY, LIGHT_GREY, PRIMARY, PRIMARY_DARK, PRIMARY_LIGHT, RED, TEXT, _clean,
-                    _int_slider, _mosaic, _show, widgets)
+from .mnist import (GREY, LIGHT_GREY, PRIMARY, PRIMARY_DARK, PRIMARY_LIGHT, RED, TEXT, _base, _clean,
+                    _device_of, _int_slider, _mosaic, _show, widgets)
 
 LETTERS = "ABCDEFGHIKLMNOPQRSTUVWXY"  # 24 letters: J and Z need motion and are left out
 ORANGE = "#E07B39"
@@ -446,6 +447,103 @@ def quiz():
 
 
 # ---------------------------------------------------------------------------
+# Exercises inside the lesson (2.5 and 2.6.3): automatic checks
+# ---------------------------------------------------------------------------
+
+_EXPECTED_LAYERS = [(784, 512), (512, 512), (512, 24)]
+
+
+def check_model(model):
+    """Check the model of section 2.5 and draw where its parameters are."""
+    import copy
+
+    import torch
+    import torch.nn as nn
+    from .quiz import failed, passed
+    if model is None:
+        failed("Create the model in the cell above first.")
+        return
+    net = copy.deepcopy(_base(model)).to("cpu")
+    linears = [layer for layer in net.modules() if isinstance(layer, nn.Linear)]
+    if not linears:
+        failed("The model has no layers yet. Add them inside nn.Sequential(...), separated by commas.")
+        return
+    try:
+        out = net(torch.rand(2, 784))
+    except Exception as error:  # noqa: BLE001 - show any error to the student
+        failed(f"The model fails on a batch of 2 images: {error}")
+        return
+    if tuple(out.shape) != (2, 24):
+        failed(f"The output should have shape (batch, 24), one score per letter, but it has shape "
+               f"{tuple(out.shape)}. Hint: use n_classes for the output layer.")
+        return
+    if not isinstance(next(iter(net.children())), nn.Flatten):
+        failed("Start with nn.Flatten(). The ASL rows are already flat, so it changes nothing here, but the "
+               "exercise asks for it and it lets the same model take 28 × 28 images.")
+        return
+    sizes = [(layer.in_features, layer.out_features) for layer in linears]
+    if sizes != _EXPECTED_LAYERS:
+        failed(f"Your Linear layers are {sizes}. Expected {_EXPECTED_LAYERS}: input, hidden and output layer.")
+        return
+    if sum(isinstance(layer, nn.ReLU) for layer in net.modules()) < 2:
+        failed("Add an nn.ReLU() after the input layer and after the hidden layer, not after the output layer.")
+        return
+    if isinstance(list(net.children())[-1], (nn.ReLU, nn.Softmax)):
+        failed("Remove the activation after the output layer: nn.CrossEntropyLoss expects raw scores (logits).")
+        return
+    counts = [layer.weight.numel() + layer.bias.numel() for layer in linears]
+    passed(f"{sum(counts):,} parameters. The picture shows where they are.")
+
+    names = ["input layer\nLinear(784, 512)", "hidden layer\nLinear(512, 512)", "output layer\nLinear(512, 24)"]
+    fig, ax = plt.subplots(figsize=(11, 2.6))
+    bars = ax.barh(names[::-1], counts[::-1], color=[ORANGE, PRIMARY, PRIMARY_DARK])
+    ax.bar_label(bars, labels=[f"{c:,}  ({c / sum(counts):.0%})" for c in counts[::-1]], padding=4, fontsize=10)
+    ax.set_xlim(0, max(counts) * 1.3)
+    ax.set_xticks([])
+    ax.set_title("Parameters per layer: weights (inputs × neurons) + biases (one per neuron)", fontsize=11)
+    _clean(ax)
+    ax.spines["bottom"].set_visible(False)
+    plt.tight_layout()
+    plt.show()
+
+
+def check_batch_accuracy(get_batch_accuracy):
+    """Check get_batch_accuracy of section 2.6.3 on a small, known batch."""
+    import torch
+    from .quiz import failed, passed
+    generator = torch.Generator().manual_seed(1)
+    y = torch.randint(0, 24, (8,), generator=generator)
+    output = torch.randn(8, 24, generator=generator)
+    output[:6] += 10 * torch.nn.functional.one_hot(y[:6], 24)  # the first 6 images are right
+    N = 1_000
+    correct = int((output.argmax(dim=1) == y).sum())
+    try:
+        result = get_batch_accuracy(output, y, N)
+    except NameError as error:
+        if "FIXME" in str(error):
+            failed("Replace every FIXME with one of the arguments: output, y or N.")
+        else:
+            failed(f"Your function raised an error: {error}")
+        return
+    except Exception as error:  # noqa: BLE001 - show any error to the student
+        failed(f"Your function raised an error: {error}. Hint: argmax is taken over the model's output.")
+        return
+    if result is None:
+        failed("The function returns None. Did you forget return?")
+    elif abs(float(result) - correct / N) < 1e-9:
+        passed(f"On a test batch of 8 images with {correct} right and N = {N:,}, it returns "
+               f"{correct} / {N:,} = {correct / N}.")
+    elif abs(float(result) - correct) < 1e-9:
+        failed("You return the number of correct predictions. Divide it by N.")
+    elif abs(float(result) - correct / len(y)) < 1e-9:
+        failed("You divide by the batch size. Divide by N, the size of the whole dataset, so that the "
+               "results of all batches add up to the epoch's accuracy.")
+    else:
+        failed(f"Expected {correct / N} on the test batch, got {result}. Hint: the prediction comes from "
+               "output, it is compared with y, and the count is divided by N.")
+
+
+# ---------------------------------------------------------------------------
 # Practice exercises: automatic checks
 # ---------------------------------------------------------------------------
 
@@ -527,3 +625,117 @@ def check_history_analysis(best_epoch, final_gap, history):
     else:
         passed(f"Best epoch: {expected_best}. Final gap: {expected_gap:.1%}. Training past epoch "
                f"{expected_best} did not help on new data.")
+
+
+def _confusion(model, loader):
+    """24 x 24 counts: rows are true letters, columns are predicted letters."""
+    import torch
+    net = _base(model)
+    device = _device_of(net)
+    net.eval()
+    matrix = torch.zeros(24, 24, dtype=torch.long)
+    with torch.no_grad():
+        for x, y in loader:
+            preds = net(x.to(device)).argmax(dim=1).cpu()
+            matrix += torch.bincount(y.cpu() * 24 + preds, minlength=24 * 24).reshape(24, 24)
+    return matrix
+
+
+def _mistake_examples(model, loader, true_label, predicted_label, limit=6):
+    """Up to `limit` images of `true_label` that the model predicts as `predicted_label`."""
+    import torch
+    net = _base(model)
+    device = _device_of(net)
+    found = []
+    with torch.no_grad():
+        for x, y in loader:
+            preds = net(x.to(device)).argmax(dim=1).cpu()
+            mask = (y.cpu() == true_label) & (preds == predicted_label)
+            found.extend(x[mask.to(x.device)].cpu().numpy())
+            if len(found) >= limit:
+                break
+    return found[:limit]
+
+
+def check_confusion(confusion, model, valid_loader):
+    """Check the confusion matrix of exercise 5 and draw it with the most confused pair of letters."""
+    from .quiz import failed, passed
+    if confusion is None:
+        failed("Replace None with your 24 × 24 confusion matrix.")
+        return
+    got = _values(confusion).astype(int)
+    if got.shape != (24, 24):
+        failed(f"confusion should have shape (24, 24), not {got.shape}.")
+        return
+    expected = _confusion(model, valid_loader).numpy()
+    if got.sum() == 0:
+        failed("The matrix is still all zeros. Add 1 to confusion[label, prediction] for every image.")
+        return
+    if got.sum() != expected.sum():
+        failed(f"The matrix counts {got.sum():,} images, but the validation set has {expected.sum():,}. "
+               "Count every image of every batch exactly once.")
+        return
+    if np.abs(got - expected).sum() > 4:
+        if np.abs(got.T - expected).sum() <= 4:
+            failed("Rows and columns are swapped. Use confusion[label, prediction]: the row is the true letter.")
+        else:
+            failed("Some counts are off. For every image, add 1 at row = true label, column = predicted label.")
+        return
+
+    per_letter = np.diag(expected) / expected.sum(axis=1)
+    mistakes = expected.copy()
+    np.fill_diagonal(mistakes, 0)
+    if mistakes.sum() == 0:
+        passed("The model makes no mistakes at all on the validation set. As the note in section 2.6.4 "
+               "explains, these validation images are very similar to the training images.")
+    else:
+        a, b = np.unravel_index(mistakes.argmax(), mistakes.shape)
+        wrong, times = int(mistakes.sum()), int(mistakes[a, b])
+        passed(f"{wrong:,} of {expected.sum():,} validation images {'is' if wrong == 1 else 'are'} wrong. The most "
+               f"common mistake: {letter(a)} predicted as {letter(b)} ({times} time{'' if times == 1 else 's'}). "
+               "Below: where the mistakes are, and examples of that mistake.")
+
+    fig, (ax_mat, ax_bar) = plt.subplots(1, 2, figsize=(14, 5.4), gridspec_kw={"width_ratios": [1, 1.3]})
+    shown = np.ma.masked_equal(mistakes, 0)
+    ax_mat.imshow(np.ones_like(mistakes), cmap="Greys", vmin=0, vmax=12)
+    image = ax_mat.imshow(shown, cmap="Oranges", vmin=0, vmax=max(1, mistakes.max()))
+    bar = fig.colorbar(image, ax=ax_mat, fraction=0.046, pad=0.04, label="number of mistakes")
+    bar.locator = MaxNLocator(integer=True)
+    bar.update_ticks()
+    ax_mat.set_xticks(range(24))
+    ax_mat.set_xticklabels(list(LETTERS), fontsize=8)
+    ax_mat.set_yticks(range(24))
+    ax_mat.set_yticklabels(list(LETTERS), fontsize=8)
+    ax_mat.set_xlabel("predicted letter")
+    ax_mat.set_ylabel("true letter")
+    ax_mat.set_title("Mistakes only (the diagonal, the correct\npredictions, is left out)", fontsize=11)
+
+    colors = [ORANGE if acc == per_letter.min() and acc < 1 else PRIMARY for acc in per_letter]
+    ax_bar.bar(range(24), per_letter, color=colors)
+    ax_bar.set_xticks(range(24))
+    ax_bar.set_xticklabels(list(LETTERS))
+    low = min(per_letter.min(), 0.95)
+    ax_bar.set_ylim(max(0, low - 0.05), 1.0)
+    ax_bar.set_ylabel("accuracy")
+    ax_bar.set_title("Accuracy per letter: diagonal ÷ row total (the hardest letter in orange)", fontsize=11)
+    _clean(ax_bar)
+    plt.tight_layout()
+    plt.show()
+
+    if mistakes.sum():
+        examples = _mistake_examples(model, valid_loader, a, b)
+        fig, axes = plt.subplots(1, len(examples) + 1, figsize=(2 * (len(examples) + 1), 2.3))
+        axes = np.atleast_1d(axes)
+        data = valid_loader.dataset
+        reference = next((i for i in range(len(data)) if int(_values(data[i][1])) == b), None)
+        if reference is not None:
+            axes[0].imshow(_values(data[reference][0]).reshape(28, 28), cmap="gray")
+        axes[0].set_title(f"a real {letter(b)}", fontsize=10, color=PRIMARY_DARK)
+        for ax, pixels in zip(axes[1:], examples):
+            ax.imshow(pixels.reshape(28, 28), cmap="gray")
+            ax.set_title(f"{letter(a)}, predicted {letter(b)}", fontsize=10, color=RED)
+        for ax in axes:
+            ax.axis("off")
+        fig.suptitle(f"Can you see why {letter(a)} is mistaken for {letter(b)}?", fontsize=11)
+        plt.tight_layout()
+        plt.show()
