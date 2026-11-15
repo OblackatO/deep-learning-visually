@@ -252,7 +252,8 @@ def _mosaic(images, labels, ax, title, columns=8, pad=2):
         r, c = divmod(k, columns)
         top, left = pad + r * (side + pad), pad + c * (side + pad)
         canvas[top:top + side, left:left + side] = images[k]
-        ax.text(left + 1.5, top + 1.5, str(int(labels[k])), color=PRIMARY,
+        text = labels[k] if isinstance(labels[k], str) else str(int(labels[k]))
+        ax.text(left + 1.5, top + 1.5, text, color=PRIMARY,
                 fontsize=10, weight="bold", ha="left", va="top")
     ax.imshow(canvas, cmap="gray", vmin=0, vmax=1)
     ax.set_title(title, fontsize=12)

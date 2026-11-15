@@ -32,6 +32,14 @@ This file lists the changes made to NVIDIA's material, as required by those lice
 ## `02_asl.ipynb`
 
 - Updated the text that referred to `ToTensor()`.
+- `train()` and `validate()` also return the average loss and the accuracy; the training loop
+  stores them in `history` and numbers the epochs from 1.
+- Added a note after the overfitting discussion: with the current version of the dataset,
+  validation accuracy is usually almost as high as training accuracy, because most validation
+  images have a near-identical image in the training set.
+- Replaced the solution cells of the exercises in sections 2.5 (build the model) and 2.6.3
+  (`get_batch_accuracy`) with an automatic check and a collapsible solution, and put the answer
+  to the discussion in section 2.6.4 in a collapsible block.
 
 ## Docker
 
@@ -48,6 +56,17 @@ This file lists the changes made to NVIDIA's material, as required by those lice
 - Replaced the copyright footer with an attribution footer, and added a Credits slide.
 - Added four new slides (an image's path through the model, an image as numbers, one
   neuron, the training loop) and a closing slide.
+
+## `slides_02.pptx`
+
+- New title, colour theme and fonts; removed all NVIDIA logos and brand backgrounds.
+- Removed the Microsoft 365 content notice slide, stock images and icons, and screenshots of
+  third-party websites; replaced them with new diagrams and with the same code as native text.
+- Recoloured NVIDIA's loss-surface and activation-function plots.
+- Rebuilt the ASL alphabet slide from the public-domain `asl.png`.
+- Replaced the copyright footer with an attribution footer, and added a Credits slide.
+- Added three new slides (from a CSV row to a tensor, Dataset and DataLoader, learning curves
+  and overfitting) and a closing slide.
 
 ## Removed
 

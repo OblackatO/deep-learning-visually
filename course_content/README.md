@@ -77,7 +77,7 @@ created during the lesson.
 | Lab | Support files downloaded from GitHub |
 |---|---|
 | 01 MNIST | `interactive/mnist.py`, `interactive/quiz.py`; torchvision downloads the dataset |
-| 02 ASL | `data/data.py` |
+| 02 ASL | `data/data.py`, `interactive/mnist.py`, `interactive/quiz.py`, `interactive/asl.py` |
 | 03 CNN | `data/data.py` |
 | 04a Augmentation | `utils.py`, `data/data.py` |
 | 04b Predictions | `utils.py`, `images/A.jpg`, `images/B.jpg` |

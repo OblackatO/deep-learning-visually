@@ -34,7 +34,7 @@ exams, and coding exercises that check your answers.
 |---|---|---|---|---|
 | 00 | Working in JupyterLab | [00_jupyterlab.ipynb](course_content/tutorials/00_jupyterlab.ipynb) | | — |
 | 01 | Image classification with MNIST | [01_mnist.ipynb](course_content/tutorials/01_mnist.ipynb) | [Open](https://colab.research.google.com/github/OblackatO/deep-learning-visually/blob/main/course_content/tutorials/01_mnist.ipynb) | ✓ Diagrams, quiz, exercises |
-| 02 | How a neural network trains | [02_asl.ipynb](course_content/tutorials/02_asl.ipynb) | [Open](https://colab.research.google.com/github/OblackatO/deep-learning-visually/blob/main/course_content/tutorials/02_asl.ipynb) | Planned |
+| 02 | How a neural network trains | [02_asl.ipynb](course_content/tutorials/02_asl.ipynb) | [Open](https://colab.research.google.com/github/OblackatO/deep-learning-visually/blob/main/course_content/tutorials/02_asl.ipynb) | ✓ Diagrams, quiz, exercises |
 | 03 | Convolutional neural networks | [03_asl_cnn.ipynb](course_content/tutorials/03_asl_cnn.ipynb) | [Open](https://colab.research.google.com/github/OblackatO/deep-learning-visually/blob/main/course_content/tutorials/03_asl_cnn.ipynb) | Planned |
 | 04a | Data augmentation | [04a_asl_augmentation.ipynb](course_content/tutorials/04a_asl_augmentation.ipynb) | [Open](https://colab.research.google.com/github/OblackatO/deep-learning-visually/blob/main/course_content/tutorials/04a_asl_augmentation.ipynb) | Planned |
 | 04b | Deploying a model | [04b_asl_predictions.ipynb](course_content/tutorials/04b_asl_predictions.ipynb) | [Open](https://colab.research.google.com/github/OblackatO/deep-learning-visually/blob/main/course_content/tutorials/04b_asl_predictions.ipynb) | Planned |
@@ -42,7 +42,9 @@ exams, and coding exercises that check your answers.
 | 05b | Transfer learning | [05b_corgi_door.ipynb](course_content/tutorials/05b_corgi_door.ipynb) | [Open](https://colab.research.google.com/github/OblackatO/deep-learning-visually/blob/main/course_content/tutorials/05b_corgi_door.ipynb) | Planned |
 | 06 | Natural language processing | [06_nlp.ipynb](course_content/tutorials/06_nlp.ipynb) | [Open](https://colab.research.google.com/github/OblackatO/deep-learning-visually/blob/main/course_content/tutorials/06_nlp.ipynb) | Planned |
 
-Slides: [Part 1 · An introduction to deep learning](course_content/slides/slides_01.pptx). The other decks are being redesigned and are added lesson by lesson.
+Slides: [Part 1 · An introduction to deep learning](course_content/slides/slides_01.pptx), [Part 2 · How a neural network trains](course_content/slides/slides_02.pptx). The other decks are being redesigned and are added lesson by lesson.
+
+One-page summaries for revision and certification prep: [Lesson 01 · Image classification with MNIST](course_content/summaries/01_mnist.md).
 Questions that come up while working through the lessons are answered in the
 [FAQ](course_content/FAQ.md).
 
