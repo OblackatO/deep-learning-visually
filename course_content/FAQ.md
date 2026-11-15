@@ -105,7 +105,48 @@ The prediction is the digit with the highest of the 10 scores.
 
 ## 02 — ASL (`02_asl.ipynb`)
 
-_No questions yet._
+### In `y = mx + b`, are `x` and `y` the location of the neuron?
+
+No. A neuron has no location. The slide "A Simpler Model" uses
+`y = mx + b` to show what one neuron computes, and the letters play two
+different roles:
+
+| Symbol | What it is | Stored in the model? |
+| --- | --- | --- |
+| `x` | The **input** that comes into the neuron: seconds on the stove, or one pixel's brightness | No: it is data, and it changes with every example |
+| `y` | The **correct output** for that input: the water's temperature, or the label | No: it is data |
+| `m` | The **weight**: how strongly the input counts | **Yes**: learned in training |
+| `b` | The **bias** (the y-intercept) | **Yes**: learned in training |
+
+Each `(x, y)` pair is one training example, a point that the line should pass
+through. The slide's table has two of them:
+
+| x (input) | y (correct answer) |
+| --- | --- |
+| 1 | 3 |
+| 2 | 5 |
+
+The neuron's job is to find the `m` and `b` that turn every `x` into its `y`.
+Here that is `m = 2`, `b = 1`: `2 × 1 + 1 = 3` and `2 × 2 + 1 = 5`. Training
+gets there by guessing `m` and `b`, measuring the error with the loss, and
+adjusting them a little at a time: the `zero_grad()`, `backward()` and
+`step()` loop of lesson 01.
+
+**From one input to a real neuron.** With many inputs, each input gets its
+own weight, but the neuron still has a single bias:
+
+```
+y = w₁·x₁ + w₂·x₂ + … + w₇₈₄·x₇₈₄ + b
+```
+
+That is why `nn.Linear(784, 512)` has 784 × 512 weights (one per input, for
+each of the 512 neurons) plus 512 biases (one per neuron): 401,920
+parameters. The `x` values are never stored in the model. They are the image
+you pass in.
+
+**To remember:** the *data* is `x` and `y`; the *model* is the weights and
+the biases. An exam option that says the model learns or stores `x` and `y`
+is a trap.
 
 ## 03 — ASL with CNNs (`03_asl_cnn.ipynb`)
 
